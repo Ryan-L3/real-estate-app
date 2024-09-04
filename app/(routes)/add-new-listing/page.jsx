@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import SnackbarNotification from "@/app/_components/SnackbarNotification";
 import { supabase } from "@/utils/supabase/client";
 import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function AddNewListing() {
   const [selectedAddress, setSelectedAddress] = useState();
@@ -15,6 +16,8 @@ function AddNewListing() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const [loader, setLoader] = useState(false);
+
+  const router = useRouter();
 
   const nextHandler = async () => {
     setLoader(true);
@@ -34,6 +37,8 @@ function AddNewListing() {
       console.log("New data added", data);
       setSnackbarMessage("Listing added successfully!");
       setSnackbarSeverity("success");
+      router.replace("/edit-listing/" + data[0].id);
+
       if (error) {
         setLoader(false);
         console.log(error);
