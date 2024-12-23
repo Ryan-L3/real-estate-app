@@ -15,11 +15,14 @@ import { Formik, validateYupSchema } from "formik";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import FileUpload from "../_components/FileUpload";
+import { Loader } from "lucide-react";
 import { list } from "postcss";
 
 function EditListing({ params }) {
   const [listing, setListing] = useState();
-
+  const [images, setImages] = useState();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     fetchData();
   }, []);
@@ -27,7 +30,7 @@ function EditListing({ params }) {
   const fetchData = async () => {
     const { data, error } = await supabase
       .from("Listing")
-      .select("*")
+      .select("*, ListingImages(*)")
       .eq("createdBy", "Ryan Le")
       .eq("id", params.id);
 
@@ -36,7 +39,9 @@ function EditListing({ params }) {
       console.log(data);
     }
   };
+
   const onSubmitHandler = async (formValue) => {
+    setLoading(true);
     const { data, error } = await supabase
       .from("Listing")
       .update(formValue)
@@ -44,8 +49,34 @@ function EditListing({ params }) {
       .select();
 
     if (data) {
-      // console.log(data);
       toast("Listing updated and published!");
+    }
+
+    for (const image of images) {
+      const file = image;
+      const fileName = Date.now().toString();
+      const fileExt = fileName.split(".").pop();
+      const { data, error } = await supabase.storage
+        .from("listingImages")
+        .upload(`${fileName}`, file, {
+          contentType: `image/${fileExt}`,
+          upsert: false,
+        });
+
+      if (error) {
+        toast("Error while uploading images");
+      } else {
+        const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL + fileName;
+
+        const { data, error } = await supabase
+          .from("ListingImages")
+          .insert([{ url: imageUrl, listing_id: params?.id }])
+          .select();
+        if (error) {
+          setLoading(false);
+        }
+      }
+      setLoading(false);
     }
   };
 
@@ -246,10 +277,24 @@ function EditListing({ params }) {
                   />
                 </div>
 
+                <div className="mt-5">
+                  <h2 className="text-lg text-slate-500">
+                    Upload Property Images
+                  </h2>
+                  <FileUpload
+                    setImages={(value) => setImages(value)}
+                    imageList={listing.ListingImages}
+                  />
+                </div>
+
                 {/* Submit Button */}
                 <div className="mt-5">
-                  <Button type="submit" variant="contained">
-                    Submit
+                  <Button disable={loading} type="submit" variant="contained">
+                    {loading ? (
+                      <Loader className="animate-spin" />
+                    ) : (
+                      "Save & Publish"
+                    )}
                   </Button>
                 </div>
               </div>
