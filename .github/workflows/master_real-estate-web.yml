@@ -24,6 +24,13 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
+        env: 
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_FRONTEND_API: ${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_API_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_API_KEY }}
+          NEXT_PUBLIC_GOOGLE_PLACE_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY }}
         run: |
           npm install
           npm run build --if-present
