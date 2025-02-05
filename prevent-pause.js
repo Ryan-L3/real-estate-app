@@ -1,11 +1,11 @@
-const SUPABASE_PROJECT_URL = process.env.SUPABASE_PROJECT_URL;
+const SUPABASE_PROJECT_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 async function keepAlive() {
   try {
     const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/`, {
       method: "HEAD",
       headers: {
-        apikey: process.env.SUPABASE_ANON_KEY,
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_API_KEY,
       },
     });
     console.log(`Ping status: ${response.status}`);
