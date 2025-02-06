@@ -1,28 +1,37 @@
 name: Deploy to Azure Web App
-
 on:
   push:
     branches:
-      - master  # or 'main' depending on your default branch name
-
+      - master  
 env:
-  AZURE_WEBAPP_NAME: real-estate-docker    # This is correct
-  DOCKER_HUB_USERNAME: ryanle3             # This is correct
-  IMAGE_NAME: real-estate-app              # This is correct
-
+  AZURE_WEBAPP_NAME: real-estate-docker
+  DOCKER_HUB_USERNAME: ryanle3
+  IMAGE_NAME: real-estate-app
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
-
-    - name: Export Secrets to .env.production
+    
+    - name: Create .env.production file
       run: |
-        touch .env.production
-        for secret_name in $(echo '${{ toJSON(secrets) }}' | jq -r 'keys[]' | grep '^ENV_'); 
-        do echo "${secret_name#ENV_}=${!secret_name}" >> .env.production
-        done
+        cat << EOF > .env.production
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+        NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+        CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+        NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        NEXT_PUBLIC_SUPABASE_API_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_API_KEY }}
+        NEXT_PUBLIC_GOOGLE_PLACE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY }}
+        EOF
+
+    - name: Debug env file
+      run: |
+        echo "Checking if .env.production exists:"
+        ls -la .env.production
+        echo "Environment variables set (without values):"
+        cat .env.production | cut -d'=' -f1
+    
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
       
@@ -38,6 +47,13 @@ jobs:
         context: .
         push: true
         tags: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        build-args: |
+          NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_API_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_API_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
+          CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_GOOGLE_PLACE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY }}
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
