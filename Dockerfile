@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 # Copy project files and env
 COPY . .
-COPY .env.local .env
+COPY .env.production .env
 # Set production mode and build
 ENV NODE_ENV=production
 RUN npm run build
