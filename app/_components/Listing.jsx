@@ -4,8 +4,17 @@ import { Bath, BedDouble, MapPin, Ruler, Search } from "lucide-react";
 import GoogleAddressSearch from "./GoogleAddressSearch";
 import { selectClasses } from "@mui/material";
 import { Button } from "@mui/material";
+import FilterSection from "./FilterSection";
 
-function Listing({ listing, handleSearchClick, searchAddress }) {
+function Listing({
+  listing,
+  handleSearchClick,
+  searchAddress,
+  setBedCount,
+  setBathCount,
+  setParkingCount,
+  setHomeType,
+}) {
   const [address, setAddress] = useState();
   return (
     <div>
@@ -17,6 +26,7 @@ function Listing({ listing, handleSearchClick, searchAddress }) {
           }}
           setCoordinates={(v) => console.log}
         />
+
         <Button
           className="flex gap-2"
           variant="contained"
@@ -25,6 +35,14 @@ function Listing({ listing, handleSearchClick, searchAddress }) {
           Search
         </Button>
       </div>
+
+      {/* <FilterSection
+        setBedCount={setBedCount}
+        setBathCount={setBathCount}
+        setParkingCount={setParkingCount}
+        setHomeType={setHomeType}
+      /> */}
+
       {address && (
         <div className="px-3 my-5">
           <h2 className="text-xl">

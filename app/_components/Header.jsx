@@ -42,13 +42,6 @@ function Header() {
               Agent Finder
             </li>
           </Link>
-          <Link href={"/"}>
-            <li
-              className={`hover:text-primary font-medium text-sm cursor-pointer`}
-            >
-              Docker Test
-            </li>
-          </Link>
         </ul>
       </div>
       <div className="flex gap-2 items-center">
