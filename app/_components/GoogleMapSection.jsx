@@ -1,5 +1,11 @@
 import React from "react";
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { useLoadScript } from "@react-google-maps/api";
+import dynamic from "next/dynamic";
+
+const GoogleMap = dynamic(
+  () => import("@react-google-maps/api").then((mod) => mod.GoogleMap),
+  { ssr: false }
+);
 
 const containerStyle = {
   width: "100%",
