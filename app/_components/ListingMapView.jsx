@@ -18,7 +18,7 @@ function ListingMapView({ type }) {
     getLatestListing();
   }, []);
 
-  const GoogleMapSection = dynamic(() => import("./GoogleMapSection"), {
+  const DynamicMap = dynamic(() => import("./GoogleMapSection"), {
     ssr: false,
     loading: () => <div>Loading Map...</div>,
   });
@@ -64,8 +64,11 @@ function ListingMapView({ type }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2">
-      <div>
+    <div className="grid grid-cols-1 md:grid-cols-[1fr,900px] gap-10">
+      <div className="md:hidden h-[300px] w-full">
+        <DynamicMap />
+      </div>
+      <div className="overflow-y-auto">
         <Listing
           listing={listing}
           handleSearchClick={handleSearchClick}
@@ -77,7 +80,7 @@ function ListingMapView({ type }) {
         />
       </div>
       <div>
-        <GoogleMapSection />
+        <DynamicMap className="hidden md:block sticky top-0 h-screen" />
       </div>
     </div>
   );
