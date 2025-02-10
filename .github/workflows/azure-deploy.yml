@@ -14,24 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Create .env.production file
-      run: |
-        cat << EOF > .env.production
-        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-        NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
-        CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
-        NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-        NEXT_PUBLIC_SUPABASE_API_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_API_KEY }}
-        NEXT_PUBLIC_GOOGLE_PLACE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY }}
-        EOF
-
-    - name: Debug env file
-      run: |
-        echo "Checking if .env.production exists:"
-        ls -la .env.production
-        echo "Environment variables set (without values):"
-        cat .env.production | cut -d'=' -f1
-    
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
       
@@ -46,13 +28,12 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        tags: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:github
         build-args: |
           NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_API_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_API_KEY }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_CLERK_FRONTEND_API=${{ secrets.NEXT_PUBLIC_CLERK_FRONTEND_API }}
-          CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
           NEXT_PUBLIC_GOOGLE_PLACE_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY }}
         
     - name: Deploy to Azure Web App
@@ -60,4 +41,4 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        images: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:github
