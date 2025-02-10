@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Listing from "./Listing";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
+import GoogleMapSection from "./GoogleMapSection";
 
 function ListingMapView({ type }) {
   const [listing, setListing] = useState([]);
@@ -69,7 +70,9 @@ function ListingMapView({ type }) {
           setHomeType={setHomeType}
         />
       </div>
-      <div>Map</div>
+      <div>
+        <GoogleMapSection />
+      </div>
     </div>
   );
 }
