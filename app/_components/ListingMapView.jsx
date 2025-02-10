@@ -4,7 +4,11 @@ import Listing from "./Listing";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-import GoogleMapSection from "./GoogleMapSection";
+
+const GoogleMapSection = dynamic(() => import("./GoogleMapSection"), {
+  ssr: false,
+  loading: () => <div className="h-screen bg-slate-200 animate-pulse"></div>,
+});
 
 function ListingMapView({ type }) {
   const [listing, setListing] = useState([]);
@@ -17,11 +21,6 @@ function ListingMapView({ type }) {
   useEffect(() => {
     getLatestListing();
   }, []);
-
-  const DynamicMap = dynamic(() => import("./GoogleMapSection"), {
-    ssr: false,
-    loading: () => <div>Loading Map...</div>,
-  });
 
   const getLatestListing = async () => {
     const { data, error } = await supabase
@@ -65,9 +64,6 @@ function ListingMapView({ type }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1fr,900px] gap-10">
-      <div className="md:hidden h-[300px] w-full">
-        <DynamicMap />
-      </div>
       <div className="overflow-y-auto">
         <Listing
           listing={listing}
@@ -80,7 +76,7 @@ function ListingMapView({ type }) {
         />
       </div>
       <div>
-        <DynamicMap className="hidden md:block sticky top-0 h-screen" />
+        <GoogleMapSection className="hidden md:block sticky top-0 h-screen" />
       </div>
     </div>
   );
