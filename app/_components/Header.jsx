@@ -13,7 +13,7 @@ function Header() {
   }, [path]);
 
   return (
-    <div className="p-6 px-10 flex justify-between shadow-sm fixed top-0 w-full z-10 bg-white">
+    <div className="p-3 px-10 flex justify-between shadow-sm fixed top-0 w-full z-10 bg-white">
       <div className="flex gap-10 items-center">
         <Link href="/" onClick={() => window.location.reload()}>
           <Image src={"/logo.svg"} width={100} height={100} alt="logo" />
