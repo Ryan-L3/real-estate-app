@@ -2,6 +2,8 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
+RUN apk add --no-cache vips-dev build-base
+
 # Only include NEXT_PUBLIC_ variables as build args
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_API_KEY
@@ -27,6 +29,8 @@ RUN npm run build
 # Production stage
 FROM node:18-alpine AS runner
 WORKDIR /app
+
+RUN apk add --no-cache vips-dev
 
 # Set runtime environment variables
 ENV NODE_ENV=production
