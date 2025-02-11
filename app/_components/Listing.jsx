@@ -6,22 +6,11 @@ import {
   MapPin,
   ParkingCircleIcon,
   Ruler,
-  Search,
 } from "lucide-react";
 import GoogleAddressSearch from "./GoogleAddressSearch";
-import { selectClasses } from "@mui/material";
 import { Button } from "@mui/material";
-import FilterSection from "./FilterSection";
 
-function Listing({
-  listing,
-  handleSearchClick,
-  searchAddress,
-  setBedCount,
-  setBathCount,
-  setParkingCount,
-  setHomeType,
-}) {
+function Listing({ listing, handleSearchClick, searchAddress }) {
   const [address, setAddress] = useState();
   return (
     <div>
@@ -42,13 +31,6 @@ function Listing({
           Search
         </Button>
       </div>
-
-      {/* <FilterSection
-        setBedCount={setBedCount}
-        setBathCount={setBathCount}
-        setParkingCount={setParkingCount}
-        setHomeType={setHomeType}
-      /> */}
 
       {address && (
         <div className="px-3 my-5">

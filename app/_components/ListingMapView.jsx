@@ -7,15 +7,14 @@ import dynamic from "next/dynamic";
 
 const GoogleMapSection = dynamic(() => import("./GoogleMapSection"), {
   ssr: false,
-  loading: () => <div className="h-screen bg-slate-200 animate-pulse"></div>,
+  loading: () => (
+    <div className="h-64 md:h-screen w-full bg-slate-200 animate-pulse rounded-lg"></div>
+  ),
 });
 
 function ListingMapView({ type }) {
   const [listing, setListing] = useState([]);
   const [searchedAddress, setSearchAddress] = useState();
-  const [bedCount, setBedCount] = React.useState(0);
-  const [bathCount, setBathCount] = React.useState(0);
-  const [parkingCount, setParkingCount] = React.useState(0);
   const [homeType, setHomeType] = React.useState();
 
   useEffect(() => {
@@ -28,7 +27,6 @@ function ListingMapView({ type }) {
       .select(`*, ListingImages(url, listing_id)`)
       .eq("active", true)
       .eq("type", type)
-
       .order("id", { ascending: false });
 
     if (data) {
@@ -46,37 +44,28 @@ function ListingMapView({ type }) {
       .select(`*, ListingImages(url, listing_id)`)
       .eq("active", true)
       .eq("type", type)
-      .gte("bedroom", bedCount)
-      .gte("bathroom", bathCount)
-      .gte("parking", parkingCount)
       .like("address", "%" + searchTerm + "%")
       .order("id", { ascending: false });
 
-    if (homeType) {
-      query = query.eq("propertyType", homeType);
-    }
     const { data, error } = await query;
-
     if (data) {
       setListing(data);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr,900px] gap-10">
-      <div className="overflow-y-auto">
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-[1fr,1fr] lg:grid-cols-[1fr,900px]">
+      <div className="order-1 md:order-none">
+        <div className="sticky top-0">
+          <GoogleMapSection className="w-full h-64 md:h-screen rounded-lg" />
+        </div>
+      </div>
+      <div className="order-2 md:order-none overflow-y-auto">
         <Listing
           listing={listing}
           handleSearchClick={handleSearchClick}
           searchAddress={(v) => setSearchAddress(v)}
-          setBedCount={setBedCount}
-          setBathCount={setBathCount}
-          setParkingCount={setParkingCount}
-          setHomeType={setHomeType}
         />
-      </div>
-      <div>
-        <GoogleMapSection className="hidden md:block sticky top-0 h-screen" />
       </div>
     </div>
   );
