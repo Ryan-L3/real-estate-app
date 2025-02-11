@@ -12,7 +12,7 @@ function GoogleAddressSearch({ selectedAddress, setCoordinates }) {
       <GooglePlacesAutocomplete
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY}
         selectProps={{
-          placeholder: "Search Property Address",
+          placeholder: "Search Address",
           isClearable: true,
           className: "w-full",
           onChange: (place) => {
@@ -25,6 +25,18 @@ function GoogleAddressSearch({ selectedAddress, setCoordinates }) {
                 setCoordinates({ lat, lng });
               });
           },
+        }}
+        autocompletionRequest={{
+          componentRestrictions: {
+            country: "ca",
+          },
+          location: {
+            lat: 49.8951,
+            lng: -97.1384,
+          },
+          radius: 20000,
+          types: ["address"],
+          strictBounds: true,
         }}
       />
     </div>
