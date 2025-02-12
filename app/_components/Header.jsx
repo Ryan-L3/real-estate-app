@@ -28,14 +28,14 @@ function Header() {
               For Sell
             </li>
           </Link>
-          {/* <Link href={"/"}>
+          <Link href={"/"}>
             <li
               className={`hover:text-primary font-medium text-xl cursor-pointer`}
             >
-              For Rent
+              Docker Deployment Test
             </li>
           </Link>
-          <Link href={"/"}>
+          {/* <Link href={"/"}>
             <li
               className={`hover:text-primary font-medium text-xl cursor-pointer`}
             >
