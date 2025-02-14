@@ -19,7 +19,7 @@ function GoogleMapSection() {
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
-    <div className="w-full h-screen rounded-lg">
+    <div className="w-full h-[calc(80vh-50px)] rounded-lg">
       <GoogleMap
         mapContainerClassName="w-full h-full rounded-lg"
         center={{ lat: 49.8954, lng: -97.1385 }}
