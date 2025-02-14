@@ -8,14 +8,13 @@ import dynamic from "next/dynamic";
 const GoogleMapSection = dynamic(() => import("./GoogleMapSection"), {
   ssr: false,
   loading: () => (
-    <div className="h-64 md:h-screen w-full bg-slate-200 animate-pulse rounded-lg"></div>
+    <div className="h-[400px] w-full bg-slate-200 animate-pulse rounded-lg"></div>
   ),
 });
 
 function ListingMapView({ type }) {
   const [listing, setListing] = useState([]);
   const [searchedAddress, setSearchAddress] = useState();
-  const [homeType, setHomeType] = React.useState();
 
   useEffect(() => {
     getLatestListing();
@@ -55,17 +54,17 @@ function ListingMapView({ type }) {
 
   return (
     <div className="flex flex-col gap-4 md:grid md:grid-cols-[1fr,1fr] lg:grid-cols-[1fr,900px]">
-      <div className="order-1 md:order-none">
-        <div className="sticky top-0">
-          <GoogleMapSection className="w-full h-64 md:h-screen rounded-lg" />
-        </div>
-      </div>
       <div className="order-2 md:order-none overflow-y-auto">
         <Listing
           listing={listing}
           handleSearchClick={handleSearchClick}
           searchAddress={(v) => setSearchAddress(v)}
         />
+      </div>
+      <div className="order-1 md:order-none">
+        <div className="sticky top-0">
+          <GoogleMapSection className="w-full h-full md:h-30 rounded-lg" />
+        </div>
       </div>
     </div>
   );
